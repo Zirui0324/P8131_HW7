@@ -30,12 +30,24 @@ boxplot(frequency~attitude, xlab="attitude", ylab="pitch")
 # fit LMM with random intercept
 lmm1 = lme(frequency ~ gender+attitude, random=~1 | subject, data=pl, method="REML" )
 summary(lmm1)
-# covariance matrix for a subject Yi
-var_b = as.numeric(VarCorr(lmm1)[1])
-var = as.numeric(VarCorr(lmm1)[2])
-covy = matrix(var_b, ncol = 7, nrow = 7) 
-diag(covy)= var_b + var
-covy
+```
+
+The covariance matrix for a subject $Y_{i}$ is:
+
+$$
+cov(Y_i) = 
+\begin{bmatrix}
+\sigma^2 + \sigma_{b}^2  & \sigma_{b}^2 & ... & \sigma_{b}^2 \\
+\sigma_{b}^2 & \sigma^2 + \sigma_{b}^2 & ... & \sigma_{b}^2 \\
+... & \\
+\sigma_{b}^2 & \sigma_{b}^2 & ... & \sigma^2 + \sigma_{b}^2 
+\end{bmatrix}
+$$
+where $$ \sigma^2  = `r as.numeric(VarCorr(lmm1)[2])`, \sigma_{b}^2 = `r as.numeric(VarCorr(lmm1)[1])`$$
+
+
+
+```{r}
 # covariance matrix for estimates of fixed effects
 vcov(lmm1)
 # BLUPs for subject-specific intercepts
@@ -53,3 +65,25 @@ anova(lmm2.1, lmm2.2)
 ```
 
 The P-value is greater than 0.05, thus we fail to reject the null and use the smaller model without the interaction term.
+
+### Question (d)
+
+```{r}
+# fit LMM with random intercepts for subject and scenario
+lmm3 = lmer(frequency ~ gender + attitude + (1|subject) + (1|scenario), data=pl)
+summary(lmm3)
+VarCorr(lmm3)
+```
+
+The covariance matrix for a subject $Y_{i}$ is:
+
+$$
+cov(Y_i) = 
+\begin{bmatrix}
+\sigma^2 + \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & ... & \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 \\
+\sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & \sigma^2 + \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & ... & \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 \\
+... & \\
+\sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & ... & \sigma^2 + \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 
+\end{bmatrix}
+$$
+where $$ \sigma^2  = `r round((summary(lmm3)$sigma)^2, 2)`, \sigma_{b_{1}}^2 = `r round(as.numeric(VarCorr(lmm3)[2]), 2)`, , \sigma_{b_{2}}^2 = `r round(as.numeric(VarCorr(lmm3)[1]), 2)`$$
