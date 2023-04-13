@@ -8,14 +8,40 @@ date: "2023-04-13"
 library(readr)
 library(tidyverse)
 library(dplyr)
+library(nlme)
+library(lme4)
 ```
 
 ### Question (a)
+
 ```{r chunk_qa, message=FALSE, warning=FALSE}
-pl = read.csv("./HW7-politeness_data.csv") %>% 
-  mutate(attitude = as.numeric(as.factor(attitude)))
+# load data
+pl = read.csv("./HW7-politeness_data.csv") 
 attach(pl)
+# boxplot
 boxplot(frequency~gender, xlab="gender", ylab="pitch")
 boxplot(frequency~attitude, xlab="attitude", ylab="pitch")
 ```
+
+### Question (b)
+
+```{r}
+# fit LMM with random intercept
+lmm1 = lme(frequency ~ gender+attitude, random=~1 | subject, data=pl, method="REML" )
+summary(lmm1)
+# covariance matrix for a subject Yi
+var_b = as.numeric(VarCorr(lmm1)[1])
+var = as.numeric(VarCorr(lmm1)[2])
+covy = matrix(var_b, ncol = 7, nrow = 7) 
+diag(covy)= var_b + var
+covy
+# covariance matrix for estimates of fixed effects
+vcov(lmm1)
+# BLUPs for subject-specific intercepts
+random.effects(lmm1)
+# residuals
+pl$frequency-fitted(lmm1)
+```
+
+
 
