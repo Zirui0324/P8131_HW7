@@ -470,6 +470,15 @@ pl$frequency-fitted(lmm1)</code></pre>
 ## attr(,&quot;label&quot;)
 ## [1] &quot;Fitted values&quot;</code></pre>
 </div>
+<div id="question-c" class="section level3">
+<h3>Question (c)</h3>
+<pre class="r"><code>lmm2.1 = lme(frequency ~ gender+attitude, random=~1|subject, data=pl, method=&quot;ML&quot; )
+lmm2.2 = lme(frequency ~ gender+attitude+gender*attitude, random=~1|subject, data=pl, method=&quot;ML&quot; )
+anova(lmm2.1, lmm2.2)</code></pre>
+<pre><code>##        Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+## lmm2.1     1  5 825.6363 837.7904 -407.8182                        
+## lmm2.2     2  6 826.2508 840.8357 -407.1254 1 vs 2 1.385523  0.2392</code></pre>
+</div>
 
 
 

@@ -1,7 +1,8 @@
 ---
 title: "P8131_HW7"
-output: html_document
-date: "2023-04-13"
+output: pdf_document
+date: "2023-04-11"
+author: "Zirui Zhang (zz3039)"
 ---
 
 ```{r chunk_setup, message=FALSE}
@@ -43,5 +44,12 @@ random.effects(lmm1)
 pl$frequency-fitted(lmm1)
 ```
 
+### Question (c)
 
+```{r}
+lmm2.1 = lme(frequency ~ gender+attitude, random=~1|subject, data=pl, method="ML" )
+lmm2.2 = lme(frequency ~ gender+attitude+gender*attitude, random=~1|subject, data=pl, method="ML" )
+anova(lmm2.1, lmm2.2)
+```
 
+The P-value is greater than 0.05, thus we fail to reject the null and use the smaller model without the interaction term.
