@@ -1,0 +1,21 @@
+---
+title: "P8131_HW7"
+output: html_document
+date: "2023-04-13"
+---
+
+```{r chunk_setup, message=FALSE}
+library(readr)
+library(tidyverse)
+library(dplyr)
+```
+
+### Question (a)
+```{r chunk_qa, message=FALSE, warning=FALSE}
+pl = read.csv("./HW7-politeness_data.csv") %>% 
+  mutate(attitude = as.numeric(as.factor(attitude)))
+attach(pl)
+boxplot(frequency~gender, xlab="gender", ylab="pitch")
+boxplot(frequency~attitude, xlab="attitude", ylab="pitch")
+```
+
