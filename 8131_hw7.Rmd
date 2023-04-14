@@ -24,6 +24,8 @@ boxplot(frequency~gender, xlab="gender", ylab="pitch")
 boxplot(frequency~attitude, xlab="attitude", ylab="pitch")
 ```
 
+Generally female tend to higher pith than male, and inf attitude has slight higher pitch than pol attitude (ignoring scenarios).
+
 ### Question (b)
 
 ```{r}
@@ -72,7 +74,6 @@ The P-value is greater than 0.05, thus we fail to reject the null and use the sm
 # fit LMM with random intercepts for subject and scenario
 lmm3 = lmer(frequency ~ gender + attitude + (1|subject) + (1|scenario), data=pl)
 summary(lmm3)
-VarCorr(lmm3)
 ```
 
 The covariance matrix for a subject $Y_{i}$ is:
@@ -86,4 +87,7 @@ cov(Y_i) =
 \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 & ... & \sigma^2 + \sigma_{b_{1}}^2 + \sigma_{b_{2}}^2 
 \end{bmatrix}
 $$
-where $$ \sigma^2  = `r round((summary(lmm3)$sigma)^2, 2)`, \sigma_{b_{1}}^2 = `r round(as.numeric(VarCorr(lmm3)[2]), 2)`, , \sigma_{b_{2}}^2 = `r round(as.numeric(VarCorr(lmm3)[1]), 2)`$$
+where $$ \sigma^2  = `r round((summary(lmm3)$sigma)^2, 2)`, \sigma_{b_{1}}^2 = `r round(as.numeric(VarCorr(lmm3)[2]), 2)` , \sigma_{b_{2}}^2 = `r round(as.numeric(VarCorr(lmm3)[1]), 2)`$$
+
+Interpretation of the coeffcient for the fixed effect term attitude:
+keeping scenario fixed, for a subject with pol attitude, the frequency decrease by `r round(summary(lmm3)$coefficient[3], 4)`% compared to he or she with an inf attitude.
